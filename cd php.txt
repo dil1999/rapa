@@ -1,0 +1,823 @@
+composer create-project laravel/laravel xxx
+
+php artisan serve
+php artisan make:controller xxx
+php artisan make:header xxx
+
+
+
+<-------------------------------------------controller ---->
+
+public function index(){
+        echo "Hello World";
+        return view('user');
+    }
+
+<---------------------------------------routes --> wen.php---->
+
+Use App\Http\Controllers\User;
+
+
+Route::get('/', function () {
+    return view('user');
+    });
+
+
+Route::post('/add',[Users::class,'load']);
+
+
+<-----------------------------------------from design ----user.blade.php------->
+
+
+
+<x-header />
+<!-- CSS only -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+<!-- JavaScript Bundle with Popper -->
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
+<p>Registration Form</p>
+<br>
+<div class="col-4">
+            <form action="bootstrap.php" class="form-control">
+
+  <form action="/add" method="post">@csrf
+            <input type="text" name="fname" placeholder="First Name" id="fname"><br><br>
+            
+            <input type="email" name="email" placeholder="Enter Your Email" id="email"><br><br>
+
+
+            <label for="gender" style="font-size:18pt"> Select the Gender </label><br>
+            <input type="radio" id="gender1" name="gender1" value="male">
+            <label for="html">Male</label>
+
+
+            <label for="course" style="font-size:18pt"> Choose Your Course </label><br>
+            <input type="checkbox" id="course1" name="course1" value="programming">
+            <label for="course1">Programming</label><br>
+
+
+            
+            <input type="reset" name="reset" value="Reset" style="background-color:gray">
+            <input type="submit" name="submit" value="Submit" style="background-color:blue">
+
+   </form>
+</div>
+
+
+
+
+
+
+
+
+<-------------------------image upload------------------>
+
+*create db
+*change .emv
+*change config/database.php
+
+*php artisan make:migration create_employees_table
+
+*in db--> migration -> new folder
+     inside up() function
+
+        Schema::create('employees', function (Blueprint $table) {
+            $table->string(‘name’);
+            $table->string(‘address’);
+            $table->string(‘mobile’);
+            $table->string(‘photo’,300);
+            $table->timestamps();
+           })
+
+
+*php artisan migrate
+*php artisan make:controller EmployeeController --resource
+*php artisan make:model Employee
+
+
+*app -> models -> employee.php
+
+    use HasFactory;
+    protected $table = 'employees';
+    protected $primarKey = 'id';
+    protected $fillable = ['name','address','mobile','photo'];
+
+*create folder as employees inside view folder
+
+*create layout.blade.php
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initialscale=1.0">
+<title>Image Upload</title>
+<title>Laravel 9 Image Upload and Display in Datatable | File
+Storage</title>
+<link
+href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.mi
+n.css" rel="stylesheet" integrity="sha384-
+1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3"
+crossorigin="anonymous">
+</head>
+<body>
+<div class="container">
+@yield('content')
+</div>
+</body>
+</html>
+
+
+
+
+*index.blade.php
+
+@extends('employees.layout')
+@section('content')
+ <div class="container">
+ <div class="row">
+ <div class="col-12" style="padding:20px;">
+ <div class="card">
+ <div class="card-header">Laravel 9 Image
+Upload and Display in Datatable | File Storage</div>
+ <div class="card-body">
+ <a href="{{ url('/employee/create') }}"
+class="btn btn-success btn-sm" title="Add New Contact">
+<i class="fa fa-plus" ariahidden="true"></i> Add New
+ </a>
+ <br/>
+ <br/>
+ <div class="table-responsive">
+ <table class="table">
+ <thead>
+ <tr>
+ <th>#</th>
+ <th>Name</th>
+ <th>Address</th>
+ <th>Telephone</th>
+ <th>Photo</th>
+ </thead>
+ </thead>
+ <tbody>
+ @foreach($employees as $item)
+ <tr>
+ <td>{{ $loop->iteration
+}}</td>
+ <td>{{ $item->name }}</td>
+ <td>{{ $item->address
+}}</td>
+ <td>{{ $item->mobile
+}}</td>
+ <td>
+ <img src="{{
+asset($item->photo) }}" width= '50' height='50' class="img imgresponsive" />
+
+
+ </td>
+ </tr>
+ @endforeach
+ </tbody>
+ </table>
+ </div>
+ </div>
+ </div>
+ </div>
+ </div>
+ </div>
+@endsection
+
+
+
+
+
+
+
+*create.blade.php
+
+@extends('employees.layout')
+@section('content')
+<div class="card" style="margin: 20px;">
+<div class="card-header">Create New Employee</div>
+<div class="card-body">
+<form action="{{ url('employee') }}" method="post"
+enctype="multipart/form-data">
+{!! csrf_field() !!}
+<label>Name</label></br>
+<input type="text" name="name" id="name" class="formcontrol"></br>
+<label>Address</label></br>
+<input type="text" name="address" id="address" class="formcontrol"></br>
+<label>Mobile</label></br>
+<input type="text" name="mobile" id="mobile" class="formcontrol"></br>
+<input class="form-control" name="photo" type="file" id="photo">
+<input type="submit" value="Save" class="btn btn-success"></br>
+</form>
+</div>
+</div>
+@stop
+
+
+
+
+* open app -> http -> controllers --> EmployeeController
+
+        use App\Models\Employee;
+
+
+
+public function index()
+{
+$employees = Employee::all();
+return view ('employees.index')->with('employees', $employees);
+}
+
+
+
+public function create()
+{
+return view('employees.create');
+}
+
+
+
+public function store(Request $request)
+{
+$requestData = $request->all();
+$fileName = time().$request->file('photo')-
+>getClientOriginalName();
+$path = $request->file('photo')->storeAs('images', $fileName,
+'public');
+$requestData["photo"] = '/storage/'.$path;
+Employee::create($requestData);
+return redirect('employee')->with('flash_message', 'Employee
+Addedd!');
+}
+
+
+
+
+
+*go to routes-> web.php
+
+use App\Http\Controllers\EmployeeController;
+Route::resource("/employee", EmployeeController::class);
+
+
+*php artisan storage:link
+
+*php artisan serve
+
+*localhost:8000/employee
+
+
+
+
+
+
+
+<-------------------------------------file upload------------------------------>
+
+*create FormController.php
+
+
+<?php
+namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers;
+use Illuminate\Http\Request;
+
+use DB;
+use Carbon\Carbon;
+use App\Models\form_basic;
+use Brian2694\Toastr\Facades\Toastr;
+ 
+
+class FormController extends Controller
+{
+    
+
+     //view page
+    public function index()
+    {
+        //$data = DB::table('form_basics')->get();
+        $data = form_basic::all();
+        return view('form',compact("data"));
+    }
+
+    
+    public function create()
+    {
+        //
+    }
+
+    
+
+      // save record
+      public function saveRecord(Request $request)
+      { 
+          $request->validate([
+              'name'   => 'required|string|max:255',
+              'age'    => 'required|numeric',
+              'gander' => 'required|in:male,female',
+              'email'  => 'required|email',
+              'upload' => 'required|max:1024'
+          ]);
+        DB::beginTransaction();
+        try {
+            
+            $file = $request->file('upload')->store('images');
+
+            $form = new form_basic;
+            $form->name    = $request->name;
+            $form->age     = $request->age;
+            $form->gander  = $request->gander;
+            $form->email   = $request->email;
+            $form->upload  = $file;
+            $form->save();
+            
+            DB::commit();
+            // Toastr::success('Create new holiday successfully :)','Success');
+            return redirect()->back();
+            
+        } catch(\Exception $e) {
+            DB::rollback();
+            // Toastr::error('Add Holiday fail :)','Error');
+            return redirect()->back();
+        }
+    }
+
+    // download
+    public function download($id)
+    {
+        $data = DB::table('form_basics')->where('id',$id)->first();
+        $filepath = storage_path("app/{$data->upload}");
+        return \Response::download($filepath);
+    }
+}
+
+***in models form_basic.php
+
+
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+class form_basic extends Model
+{
+    use HasFactory;
+    protected $fillable = [
+        'name',
+        'age',
+        'gander',
+        'email',
+        'upload',
+       ];
+}
+
+
+**in view form.blade.php
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>Form</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:400,700">
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+
+<style>
+    body {
+        color: #fff;
+        background: #f8f6f6;
+        font-family: 'Roboto', sans-serif;
+    }
+    .form-control {
+        font-size: 15px;
+    }
+    .form-control, .form-control:focus, .input-group-text {
+        border-color: #e1e1e1;
+    }
+    .form-control, .btn {        
+        border-radius: 3px;
+    }
+    .signup-form {
+        width: 40%;
+        margin: 0 auto;
+        padding: 30px 0;		
+    }
+    .signup-form form {
+        color: #999;
+        border-radius: 3px;
+        margin-bottom: 15px;
+        background: #fff;
+        box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
+        padding: 30px;
+    }
+    .signup-form h2 {
+        color: #333;
+        font-weight: bold;
+        margin-top: 0;
+    }
+    .signup-form hr {
+        margin: 0 -30px 20px;
+    }
+    .signup-form .form-group {
+        margin-bottom: 20px;
+    }
+    .signup-form label {
+        font-weight: normal;
+        font-size: 15px;
+    }
+    .signup-form .form-control {
+        min-height: 38px;
+        box-shadow: none !important;
+    }	
+    .signup-form .input-group-addon {
+        max-width: 42px;
+        text-align: center;
+    }	
+    .signup-form .btn, .signup-form .btn:active {        
+        font-size: 16px;
+        font-weight: bold;
+        background: #19aa8d !important;
+        border: none;
+        min-width: 140px;
+    }
+    .signup-form .btn:hover, .signup-form .btn:focus {
+        background: #179b81 !important;
+    }
+    .signup-form a {
+        color: #fff;	
+        text-decoration: underline;
+    }
+    .signup-form a:hover {
+        text-decoration: none;
+    }
+    .signup-form form a {
+        color: #19aa8d;
+        text-decoration: none;
+    }	
+    .signup-form form a:hover {
+        text-decoration: underline;
+    }
+</style>
+
+<style>
+    .radio {
+        margin: 16px 0;
+        display: block;
+        cursor: pointer;
+    }
+    .radio input {
+        display: none;
+    }
+    .radio input + span {
+        line-height: 22px;
+        height: 22px;
+        padding-left: 22px;
+        display: block;
+        position: relative;
+    }
+    .radio input + span:not(:empty) {
+        padding-left: 31px;
+        padding-right: 10px;
+    }
+    .radio input + span:before, .radio input + span:after {
+        content: "";
+        width: 22px;
+        height: 22px;
+        display: block;
+        border-radius: 50%;
+        left: 0;
+        top: 0;
+        position: absolute;
+    }
+    .radio input + span:before {
+        background: #D1D7E3;
+        transition: background 0.2s ease, transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 2);
+    }
+    .radio input + span:after {
+        background: #fff;
+        transform: scale(0.78);
+        transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.4);
+    }
+    .radio input:checked + span:before {
+        transform: scale(1.04);
+        background: #5D9BFB;
+    }
+    .radio input:checked + span:after {
+        transform: scale(0.4);
+        transition: transform 0.3s ease;
+    }
+    .radio:hover input + span:before {
+        transform: scale(0.92);
+    }
+    .radio:hover input + span:after {
+        transform: scale(0.74);
+    }
+    .radio:hover input:checked + span:after {
+        transform: scale(0.4);
+    }
+</style>
+
+</head>
+<body>
+    <div class="signup-form">
+        <form action="{{ route('form/save') }}" method="post" enctype="multipart/form-data">
+            @csrf
+            <h2>Form Basic</h2>
+            <hr>
+            <div class="form-groups">
+                <div class="input-group">
+                    <label for="name" class="col-sm-2 col-form-label">Full Name *</label>
+                    <input type="text" class="form-control @error('name') is-invalid @enderror" name="name" value="{{ old('name') }}" placeholder="Enter your name">
+                </div>
+            </div>
+        
+            <div class="input-group form-check-inline">
+                <label for="name" class="col-sm-2 col-form-label">Gander *</label>
+                <label class="radio">
+                    <input type="radio" class="" name="gander" value="male">
+                    <span>Male</span>
+                </label>
+                <label class="radio">
+                    <input type="radio" class="" name="gander" value="female">
+                    <span>Female</span>
+                </label>
+            </div>
+            <div class="form-group">
+                <div class="input-group">
+                    <label for="name" class="col-sm-2 col-form-label">Age *</label>
+                    <input type="number" class="form-control @error('age') is-invalid @enderror"value="{{ old('age') }}" name="age" placeholder="Enter your age">
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="input-group">
+                    <label for="name" class="col-sm-2 col-form-label">Email *</label>
+                    <input type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" placeholder="Enter your email">
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="input-group">
+                    <label for="name" class="col-sm-2 col-form-label">Document *</label>
+                    <input type="file" class="form-control @error('upload') is-invalid @enderror" name="upload" value="{{ old('upload') }} placeholder="Enter your email" multiple>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="name" class="col-sm-2 col-form-label"></label>
+                <button type="submit" class="btn btn-primary btn-lg">Save</button>
+            </div>
+        </form>
+    </div>
+    <div class="container">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>No</th>
+                    <th>Full Name</th>
+                    <th>Gender</th>
+                    <th>Age</th>
+                    <th>Email</th>
+                    <th>Document</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach ($data as $key=>$items)
+                 
+                <tr>
+                    <td>{{++$key}}</td>
+                    <td>{{$items->name}}</td>
+                    <td>{{$items->gender}}</td>
+                    <td>{{$items->age}}</td>
+                    <td>{{$items->email}}</td>
+                    <td><a href="{{url('/download/'.$items->id )}}">{{asset($items->upload)}}</a></td>
+
+                </tr>
+                @endforeach
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
+
+
+
+
+
+
+*in route web.php
+
+use App\Http\Controllers\FormController;
+
+
+
+
+Route::get('form/new', [App\Http\Controllers\FormController::class, 'index'])->name('form/new');
+Route::post('form/save', [App\Http\Controllers\FormController::class, 'saveRecord'])->name('form/save');
+Route::get('download/{id}', [App\Http\Controllers\FormController::class, 'download']);
+
+
+
+
+
+DB-Name --- laravel_learn
+
+
+
+
+
+
+
+
+    
+
+
+
+
+
+
+<--------------------------------form validation in laravel------------------>
+
+<!DOCTYPE html>  
+<html>  
+<head>  
+<style>  
+.error {color: #FF0001;}  
+</style>  
+</head>  
+<body>    
+  
+<?php  
+// define variables to empty values  
+$nameErr = $emailErr = $mobilenoErr = $genderErr = $websiteErr = $agreeErr = "";  
+$name = $email = $mobileno = $gender = $website = $agree = "";  
+  
+//Input fields validation  
+if ($_SERVER["REQUEST_METHOD"] == "POST") {  
+      
+//String Validation  
+    if (emptyempty($_POST["name"])) {  
+         $nameErr = "Name is required";  
+    } else {  
+        $name = input_data($_POST["name"]);  
+            // check if name only contains letters and whitespace  
+            if (!preg_match("/^[a-zA-Z ]*$/",$name)) {  
+                $nameErr = "Only alphabets and white space are allowed";  
+            }  
+    }  
+      
+    //Email Validation   
+    if (emptyempty($_POST["email"])) {  
+            $emailErr = "Email is required";  
+    } else {  
+            $email = input_data($_POST["email"]);  
+            // check that the e-mail address is well-formed  
+            if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {  
+                $emailErr = "Invalid email format";  
+            }  
+     }  
+    
+    //Number Validation  
+    if (emptyempty($_POST["mobileno"])) {  
+            $mobilenoErr = "Mobile no is required";  
+    } else {  
+            $mobileno = input_data($_POST["mobileno"]);  
+            // check if mobile no is well-formed  
+            if (!preg_match ("/^[0-9]*$/", $mobileno) ) {  
+            $mobilenoErr = "Only numeric value is allowed.";  
+            }  
+        //check mobile no length should not be less and greator than 10  
+        if (strlen ($mobileno) != 10) {  
+            $mobilenoErr = "Mobile no must contain 10 digits.";  
+            }  
+    }  
+      
+    //URL Validation      
+    if (emptyempty($_POST["website"])) {  
+        $website = "";  
+    } else {  
+            $website = input_data($_POST["website"]);  
+            // check if URL address syntax is valid  
+            if (!preg_match("/\b(?:(?:https?|ftp):\/\/|www\.)[-a-z0-9+&@#\/%?=~_|!:,.;]*[-a-z0-9+&@#\/%=~_|]/i",$website)) {  
+                $websiteErr = "Invalid URL";  
+            }      
+    }   
+    //Empty Field Validation  
+    if (emptyempty ($_POST["gender"])) {  
+            $genderErr = "Gender is required";  
+    } else {  
+            $gender = input_data($_POST["gender"]);  
+    }  
+  
+    //Checkbox Validation  
+    if (!isset($_POST['agree'])){  
+            $agreeErr = "Accept terms of services before submit.";  
+    } else {  
+            $agree = input_data($_POST["agree"]);  
+    }  
+}  
+function input_data($data) {  
+  $data = trim($data);  
+  $data = stripslashes($data);  
+  $data = htmlspecialchars($data);  
+  return $data;  
+}  
+?>  
+  
+<h2>Registration Form</h2>  
+<span class = "error">* required field </span>  
+<br><br>  
+<form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" >    
+    Name:   
+    <input type="text" name="name">  
+    <span class="error">* <?php echo $nameErr; ?> </span>  
+    <br><br>  
+    E-mail:   
+    <input type="text" name="email">  
+    <span class="error">* <?php echo $emailErr; ?> </span>  
+    <br><br>  
+    Mobile No:   
+    <input type="text" name="mobileno">  
+    <span class="error">* <?php echo $mobilenoErr; ?> </span>  
+    <br><br>  
+    Website:   
+    <input type="text" name="website">  
+    <span class="error"><?php echo $websiteErr; ?> </span>  
+    <br><br>  
+    Gender:  
+    <input type="radio" name="gender" value="male"> Male  
+    <input type="radio" name="gender" value="female"> Female  
+    <input type="radio" name="gender" value="other"> Other  
+    <span class="error">* <?php echo $genderErr; ?> </span>  
+    <br><br>  
+    Agree to Terms of Service:  
+    <input type="checkbox" name="agree">  
+    <span class="error">* <?php echo $agreeErr; ?> </span>  
+    <br><br>                            
+    <input type="submit" name="submit" value="Submit">   
+    <br><br>                             
+</form>  
+  
+<?php  
+    if(isset($_POST['submit'])) {  
+    if($nameErr == "" && $emailErr == "" && $mobilenoErr == "" && $genderErr == "" && $websiteErr == "" && $agreeErr == "") {  
+        echo "<h3 color = #FF0001> <b>You have sucessfully registered.</b> </h3>";  
+        echo "<h2>Your Input:</h2>";  
+        echo "Name: " .$name;  
+        echo "<br>";  
+        echo "Email: " .$email;  
+        echo "<br>";  
+        echo "Mobile No: " .$mobileno;  
+        echo "<br>";  
+        echo "Website: " .$website;  
+        echo "<br>";  
+        echo "Gender: " .$gender;  
+    } else {  
+        echo "<h3> <b>You didn't filled up the form correctly.</b> </h3>";  
+    }  
+    }  
+?>  
+  
+</body>  
+</html>
+
+
+
+
+
+
+
+
+
+
+<----------------------------------git hub-------------------------------------------->
+
+git config --global user.email <your github email address>
+
+git config --global user.name <github account name>
+
+git init  --> you can download file 
+
+git status  --> see files
+
+git add .   --> all file are adding
+
+git status  --> see the file 
+
+git commit -m "sample commit"  --> copy thrue the git hub page
+
+git remote add origin https://github.com/johnsamara12/student.git --> link depend your file
+
+git push -u origin master
+
+
+
